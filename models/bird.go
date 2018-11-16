@@ -1,4 +1,4 @@
-package bird
+package models
 
 import (
 	"fmt"
@@ -15,8 +15,8 @@ type Bird struct {
 	postedBy   string
 }
 
-// Builder helps to build a bird
-type Builder struct {
+// BirdBuilder helps to build a bird
+type BirdBuilder struct {
 	genericName,
 	commonName,
 	scientificName,
@@ -26,43 +26,43 @@ type Builder struct {
 	postedBy   string
 }
 
-// NewBuilder returns a new Builder
-func NewBuilder(genericName string) *Builder {
-	return &Builder{genericName: genericName}
+// BirdBuilder returns a new BirdBuilder
+func NewBirdBuilder(genericName string) *BirdBuilder {
+	return &BirdBuilder{genericName: genericName}
 }
 
 // CommonName sets the common name
-func (b *Builder) CommonName(commonName string) *Builder {
+func (b *BirdBuilder) CommonName(commonName string) *BirdBuilder {
 	b.commonName = commonName
 	return b
 }
 
 // ScientificName sets the ScientificName
-func (b *Builder) ScientificName(scientificName string) *Builder {
+func (b *BirdBuilder) ScientificName(scientificName string) *BirdBuilder {
 	b.scientificName = scientificName
 	return b
 }
 
 // Habitat sets the Habitat
-func (b *Builder) Habitat(habitat []string) *Builder {
+func (b *BirdBuilder) Habitat(habitat []string) *BirdBuilder {
 	b.habitat = habitat
 	return b
 }
 
 // Endangered sets the endangered
-func (b *Builder) Endangered(endangered bool) *Builder {
+func (b *BirdBuilder) Endangered(endangered bool) *BirdBuilder {
 	b.endangered = endangered
 	return b
 }
 
 // PostedBy sets the postedBy
-func (b *Builder) PostedBy(postedBy string) *Builder {
+func (b *BirdBuilder) PostedBy(postedBy string) *BirdBuilder {
 	b.postedBy = postedBy
 	return b
 }
 
 // Build returns a bird
-func (b *Builder) Build() *Bird {
+func (b *BirdBuilder) Build() *Bird {
 	return &Bird{
 		GenericName:    b.genericName,
 		commonName:     b.commonName,

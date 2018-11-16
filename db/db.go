@@ -1,12 +1,14 @@
-package bird
+package db
 
 import (
 	"fmt"
 	"strings"
+
+	"github.com/onkarbanerjee1/birdopedia/models"
 )
 
 // DB denotes a bird DB
-type DB map[string]*Bird
+type DB map[string]*models.Bird
 
 // NewDB returns a new DB instance
 func NewDB() *DB {
@@ -14,7 +16,7 @@ func NewDB() *DB {
 }
 
 // Add adds a bird to the DB
-func (db *DB) Add(bird *Bird) error {
+func (db *DB) Add(bird *models.Bird) error {
 	if _, ok := (*db)[bird.GenericName]; ok {
 		return fmt.Errorf("Duplicate entry for %s", bird.GenericName)
 	}
@@ -24,7 +26,7 @@ func (db *DB) Add(bird *Bird) error {
 }
 
 // GetByGenericName returns a bird from db based on genericName
-func (db *DB) GetByGenericName(genericName string) (*Bird, error) {
+func (db *DB) GetByGenericName(genericName string) (*models.Bird, error) {
 	bird, ok := (*db)[genericName]
 	if !ok {
 		return nil, fmt.Errorf("No entry for %s", genericName)
@@ -33,8 +35,8 @@ func (db *DB) GetByGenericName(genericName string) (*Bird, error) {
 }
 
 // GetAll returns a list of all birds in db
-func (db *DB) GetAll() []Bird {
-	birds := []Bird{}
+func (db *DB) GetAll() []models.Bird {
+	birds := []models.Bird{}
 	for _, bird := range *db {
 		birds = append(birds, *bird)
 	}
