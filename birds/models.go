@@ -1,4 +1,4 @@
-package models
+package birds
 
 import (
 	"fmt"
@@ -6,13 +6,12 @@ import (
 
 // Bird denotes a bird
 type Bird struct {
-	GenericName,
-	commonName,
-	scientificName,
-	pictureURL string
-	habitat    []string
-	endangered bool
-	postedBy   string
+	CommonName,
+	ScientificName,
+	PictureURL string
+	Habitat    []string
+	Endangered bool
+	PostedBy   string
 }
 
 // BirdBuilder helps to build a bird
@@ -26,9 +25,9 @@ type BirdBuilder struct {
 	postedBy   string
 }
 
-// BirdBuilder returns a new BirdBuilder
-func NewBirdBuilder(genericName string) *BirdBuilder {
-	return &BirdBuilder{genericName: genericName}
+// NewBirdBuilder returns a new BirdBuilder
+func NewBirdBuilder(commonName string) *BirdBuilder {
+	return &BirdBuilder{commonName: commonName}
 }
 
 // CommonName sets the common name
@@ -40,6 +39,12 @@ func (b *BirdBuilder) CommonName(commonName string) *BirdBuilder {
 // ScientificName sets the ScientificName
 func (b *BirdBuilder) ScientificName(scientificName string) *BirdBuilder {
 	b.scientificName = scientificName
+	return b
+}
+
+// PictureURL sets the picture URL
+func (b *BirdBuilder) PictureURL(picURL string) *BirdBuilder {
+	b.pictureURL = picURL
 	return b
 }
 
@@ -64,18 +69,17 @@ func (b *BirdBuilder) PostedBy(postedBy string) *BirdBuilder {
 // Build returns a bird
 func (b *BirdBuilder) Build() *Bird {
 	return &Bird{
-		GenericName:    b.genericName,
-		commonName:     b.commonName,
-		scientificName: b.scientificName,
-		habitat:        b.habitat,
-		endangered:     b.endangered,
-		postedBy:       b.postedBy,
+		CommonName:     b.commonName,
+		ScientificName: b.scientificName,
+		Habitat:        b.habitat,
+		Endangered:     b.endangered,
+		PostedBy:       b.postedBy,
 	}
 }
 
 func (bird *Bird) String() string {
 	return fmt.Sprintf(
-		"Generic Name : %s,	 Common Name : %s, Scientific Name : %s, Habitat : %s, Endangered %t, Posted By %s\n",
-		bird.GenericName, bird.commonName, bird.scientificName, bird.habitat, bird.endangered, bird.postedBy,
+		"Common Name : %s, Scientific Name : %s, Habitat : %s, Endangered %t, Posted By %s\n",
+		bird.CommonName, bird.ScientificName, bird.Habitat, bird.Endangered, bird.PostedBy,
 	)
 }

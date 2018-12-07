@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -11,33 +10,31 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/onkarbanerjee1/birdopedia/controllers"
-	"github.com/onkarbanerjee1/birdopedia/db"
-	"github.com/onkarbanerjee1/birdopedia/models"
+	"github.com/onkarbanerjee1/birdopedia/birds"
+	cfg "github.com/onkarbanerjee1/birdopedia/config"
 )
 
 func main() {
 
-	db := db.NewDB()
-
-	hawkBuilder := models.NewBirdBuilder("Hawk")
-	hawk := hawkBuilder.CommonName("Northern goshawk").ScientificName("Accipiter gentilis").Habitat([]string{"Asia", "Europe",
-		"North America"}).Endangered(true).PostedBy("Onkar Banerjee").Build()
-	db.Add(hawk)
-
-	eagleBuilder := models.NewBirdBuilder("Eagle")
-	eagle := eagleBuilder.CommonName("Harpy eagle").ScientificName("Harpia harpyja").Habitat([]string{"South America",
-		"Central America"}).Endangered(true).PostedBy("Tuhina Banerjee").Build()
-	db.Add(eagle)
-
-	fmt.Println("Contents of db are \n", db)
+	env, err := cfg.NewEnv("postgres://onkar:passwd@localhost/bird_db")
+	if err != nil {
+		panic(err)
+	}
+	defer env.DB.Close()
 
 	r := mux.NewRouter()
 
-	r.HandleFunc("/form", controllers.FormHandler)
-	r.Handle("/birds", &controllers.AllBirdsGetter{DB: db}).Methods(http.MethodGet)
-	r.Handle("/birds/{name}", &controllers.BirdGetter{DB: db}).Methods(http.MethodGet)
-	r.Handle("/addBirds", &controllers.BirdAdder{DB: db}).Methods(http.MethodPost)
+	r.Handle("/birds/query", birds.QueryPage()).Methods(http.MethodGet)
+	r.Handle("/birds/fetch", birds.GetBirdByName(env)).Methods(http.MethodGet)
+	r.Handle("/birds/add", birds.NewBirdForm()).Methods(http.MethodGet)
+	r.Handle("/birds/add", birds.InsertNewBird(env)).Methods(http.MethodPost)
+	r.Handle("/birds/update", birds.UpdateBirdForm()).Methods(http.MethodGet)
+	r.Handle("/birds/update", birds.UpdateBird(env)).Methods(http.MethodPost)
+	r.Handle("/birds/delete", birds.DeleteBirdForm()).Methods(http.MethodGet)
+	r.Handle("/birds/delete", birds.DeleteBird(env)).Methods(http.MethodPost)
+	r.Handle("/birds", birds.GetAllBirds(env)).Methods(http.MethodGet)
+	r.Handle("/birds/{name}", birds.GetBirdsByName(env)).Methods(http.MethodGet)
+	r.Handle("/", birds.MainPage()).Methods(http.MethodGet)
 
 	srv := &http.Server{
 		Addr:    "0.0.0.0:8000",
